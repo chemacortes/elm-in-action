@@ -2,8 +2,11 @@ module PhotoGroove exposing (main)
 
 import Browser
 import Html exposing (Html, button, div, h1, h3, img, input, label, text)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (checked, class, classList, id, name, src, title, type_)
 import Html.Events exposing (onClick)
+import Http
+import Json.Decode exposing (Decoder, field, int, list, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required)
 import Platform.Cmd exposing (none)
 import Random
 
@@ -12,8 +15,19 @@ type alias Url =
     String
 
 
-type Photo
-    = Photo Url
+type alias Photo =
+    { url : String
+    , size : Int
+    , title : String
+    }
+
+
+photoDecoder : Decoder Photo
+photoDecoder =
+    succeed Photo
+        |> required "url" string
+        |> required "size" int
+        |> optional "title" string "(untitled)"
 
 
 type Status
@@ -36,9 +50,10 @@ type ThumbnailSize
 
 type Msg
     = ClickedPhoto Url
-    | GotRandomPhoto Photo
     | ClickedSize ThumbnailSize
     | ClickedSurpriseMe
+    | GotRandomPhoto Photo
+    | GotPhotos (Result Http.Error (List Photo))
 
 
 initialModel : Model
@@ -46,6 +61,14 @@ initialModel =
     { status = Loading
     , chosenSize = Medium
     }
+
+
+initialCmd : Cmd Msg
+initialCmd =
+    Http.get
+        { url = "http://elm-in-action.com/photos/list.json"
+        , expect = Http.expectJson GotPhotos (list photoDecoder)
+        }
 
 
 urlPrefix : String
@@ -92,11 +115,12 @@ viewLoaded photos selectedUrl chosenSize =
 
 
 viewThumbnail : String -> Photo -> Html Msg
-viewThumbnail selectedUrl (Photo url) =
+viewThumbnail selectedUrl photo =
     img
-        [ src (urlPrefix ++ url)
-        , classList [ ( "selected", selectedUrl == url ) ]
-        , onClick (ClickedPhoto url)
+        [ src (urlPrefix ++ photo.url)
+        , classList [ ( "selected", selectedUrl == photo.url ) ]
+        , title <| photo.title ++ " [" ++ String.fromInt photo.size ++ " KB]"
+        , onClick (ClickedPhoto photo.url)
         ]
         []
 
@@ -148,14 +172,23 @@ update msg model =
                 Loading ->
                     ( model, Cmd.none )
 
-                Errored errorMessage ->
+                Errored _ ->
                     ( model, Cmd.none )
 
         ClickedSize size ->
             ( { model | chosenSize = size }, Cmd.none )
 
-        GotRandomPhoto (Photo url) ->
-            ( { model | status = selectUrl url model.status }, Cmd.none )
+        GotRandomPhoto photo ->
+            ( { model | status = selectUrl photo.url model.status }, Cmd.none )
+
+        GotPhotos (Ok []) ->
+            ( { model | status = Errored "0 photos found" }, Cmd.none )
+
+        GotPhotos (Ok ((firstPhoto :: _) as photos)) ->
+            ( { model | status = Loaded photos firstPhoto.url }, Cmd.none )
+
+        GotPhotos (Err _) ->
+            ( { model | status = Errored "Server error!" }, Cmd.none )
 
 
 selectUrl : Url -> Status -> Status
@@ -168,15 +201,15 @@ selectUrl url status =
         Loaded photos _ ->
             Loaded photos url
 
-        Errored errorMessage ->
+        Errored _ ->
             status
 
 
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \flags -> ( initialModel, Cmd.none )
+        { init = \_ -> ( initialModel, initialCmd )
         , view = view
         , update = update
-        , subscriptions = \model -> Sub.none
+        , subscriptions = \_ -> Sub.none
         }
