@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "elmtooling.elm-ls-vscode",
+    "necinc.elmmet",
+    "jjsuder.elm-module-explorer",
+    "hjgames.elm-pair",
+    "jlengrand.vscode-elm-signature",
+    "Rubymaniac.vscode-html-to-elm"
+  ]
+}
