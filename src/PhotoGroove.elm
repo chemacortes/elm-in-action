@@ -13,7 +13,7 @@ import Random
 
 urlPrefix : String
 urlPrefix =
-    "http://elm-in-action.com/"
+    "https://elm-in-action.com/"
 
 
 type Msg

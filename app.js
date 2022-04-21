@@ -6676,7 +6676,7 @@ var $elm$html$Html$Attributes$src = function (url) {
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
-var $author$project$PhotoGroove$urlPrefix = 'http://elm-in-action.com/';
+var $author$project$PhotoGroove$urlPrefix = 'https://elm-in-action.com/';
 var $elm$json$Json$Encode$int = _Json_wrap;
 var $elm$html$Html$label = _VirtualDom_node('label');
 var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
