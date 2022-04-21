@@ -167,7 +167,7 @@ initialModel =
 initialCmd : Cmd Msg
 initialCmd =
     Http.get
-        { url = "http://elm-in-action.com/photos/list.json"
+        { url = "https://elm-in-action.com/photos/list.json"
         , expect = Http.expectJson GotPhotos (list photoDecoder)
         }
 
