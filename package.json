@@ -1,0 +1,11 @@
+{
+    "private": true,
+    "name": "photogroove",
+    "scripts": {
+        "postinstall": "elm-tooling install"
+    },
+    "devDependencies": {
+        "elm-review": "^2.7.1",
+        "elm-tooling": "^1.8.0"
+    }
+}
