@@ -1,8 +1,8 @@
-module PhotoGroove exposing (main, selectUrl, update)
+module PhotoGroove exposing (main)
 
 import Browser
 import Html exposing (Attribute, Html, button, div, h1, h3, img, input, label, node, text)
-import Html.Attributes as Attr exposing (checked, class, classList, id, name, size, src, title, type_)
+import Html.Attributes as Attr exposing (checked, class, classList, id, name, src, title, type_)
 import Html.Events exposing (on, onClick)
 import Http
 import Json.Decode exposing (Decoder, at, int, list, string, succeed)
