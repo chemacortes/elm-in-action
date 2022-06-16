@@ -91,6 +91,19 @@ viewSizeChooser chosenSize size =
         ]
 
 
+sizeToString : ThumbnailSize -> String
+sizeToString size =
+    case size of
+        Small ->
+            "small"
+
+        Medium ->
+            "med"
+
+        Large ->
+            "large"
+
+
 viewFilter : (Int -> Msg) -> String -> Int -> Html Msg
 viewFilter toMsg name magnitude =
     div [ class "filter-slider" ]
@@ -105,17 +118,9 @@ viewFilter toMsg name magnitude =
         ]
 
 
-sizeToString : ThumbnailSize -> String
-sizeToString size =
-    case size of
-        Small ->
-            "small"
-
-        Medium ->
-            "med"
-
-        Large ->
-            "large"
+rangerSlider : List (Attribute msg) -> List (Html msg) -> Html msg
+rangerSlider =
+    node "range-slider"
 
 
 type ThumbnailSize
@@ -167,7 +172,7 @@ initialModel =
 initialCmd : Cmd Msg
 initialCmd =
     Http.get
-        { url = "https://elm-in-action.com/photos/list.json"
+        { url = urlPrefix ++ "/photos/list.json"
         , expect = Http.expectJson GotPhotos (list photoDecoder)
         }
 
@@ -242,11 +247,6 @@ main =
         , update = update
         , subscriptions = \_ -> Sub.none
         }
-
-
-rangerSlider : List (Attribute msg) -> List (Html msg) -> Html msg
-rangerSlider attributes children =
-    node "range-slider" attributes children
 
 
 onSlide : (Int -> msg) -> Attribute msg
