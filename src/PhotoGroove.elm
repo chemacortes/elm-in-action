@@ -1,4 +1,4 @@
-port module PhotoGroove exposing (main)
+port module PhotoGroove exposing (Model, Msg(..), Photo, initialModel, main, photoDecoder, update)
 
 import Browser
 import Html exposing (Attribute, Html, button, canvas, div, h1, h3, img, input, label, node, text)
@@ -160,7 +160,7 @@ photoDecoder =
     succeed Photo
         |> required "url" string
         |> required "size" int
-        |> optional "title" string "(untitle)"
+        |> optional "title" string "(untitled)"
 
 
 type Status
