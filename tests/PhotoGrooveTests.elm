@@ -2,10 +2,13 @@ module PhotoGrooveTests exposing (..)
 
 import Expect
 import Fuzz exposing (Fuzzer, int, list, string)
+import Html.Attributes as Attr exposing (src)
 import Json.Decode as Decode exposing (decodeValue)
 import Json.Encode as Encode
-import PhotoGroove exposing (Model, Msg(..), initialModel, update)
+import PhotoGroove exposing (Model, Msg(..), Status(..), initialModel, update, urlPrefix, view)
 import Test exposing (Test, describe, fuzz, fuzz2, test)
+import Test.Html.Query as Query
+import Test.Html.Selector exposing (attribute, tag, text)
 
 
 suite : Test
@@ -58,3 +61,14 @@ testSlider description toMsg amountFromModel =
                 |> Tuple.first
                 |> amountFromModel
                 |> Expect.equal amount
+
+
+noPhotosNoThumbnails : Test
+noPhotosNoThumbnails =
+    test "No thumbnails render when there are no photos to render." <|
+        \_ ->
+            initialModel
+                |> PhotoGroove.view
+                |> Query.fromHtml
+                |> Query.findAll [ tag "img" ]
+                |> Query.count (Expect.equal 0)
