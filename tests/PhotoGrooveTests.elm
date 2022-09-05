@@ -54,7 +54,7 @@ sliders =
 
 testSlider : String -> (Int -> Msg) -> (Model -> Int) -> Test
 testSlider description toMsg amountFromModel =
-    fuzz int (description ++ " sets the hue") <|
+    fuzz int description <|
         \amount ->
             initialModel
                 |> update (toMsg amount)
