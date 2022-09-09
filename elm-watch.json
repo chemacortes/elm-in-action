@@ -1,0 +1,10 @@
+{
+    "targets": {
+        "My target name": {
+            "inputs": [
+                "src/PhotoGroove.elm"
+            ],
+            "output": "app.js"
+        }
+    }
+}
